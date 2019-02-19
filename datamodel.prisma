@@ -1,0 +1,11 @@
+type User {
+  id: ID! @id
+  name: String!
+}
+
+type Sample {
+  id: ID! @id
+  sample_tissue: String!
+  z_score: Int!
+  gene: String!
+}

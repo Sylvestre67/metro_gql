@@ -1,0 +1,10 @@
+type Query {
+  samples: [Sample]!
+}
+
+type Sample {
+  id: ID!
+  sample_tissue: String!
+  z_score: Int!
+  gene: String!
+}
