@@ -14,6 +14,7 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
   U[keyof U];
 
 export interface Exists {
+  gene: (where?: GeneWhereInput) => Promise<boolean>;
   sample: (where?: SampleWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
@@ -37,6 +38,25 @@ export interface Prisma {
    * Queries
    */
 
+  gene: (where: GeneWhereUniqueInput) => GenePromise;
+  genes: (args?: {
+    where?: GeneWhereInput;
+    orderBy?: GeneOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Gene>;
+  genesConnection: (args?: {
+    where?: GeneWhereInput;
+    orderBy?: GeneOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => GeneConnectionPromise;
   sample: (where: SampleWhereUniqueInput) => SamplePromise;
   samples: (args?: {
     where?: SampleWhereInput;
@@ -81,6 +101,22 @@ export interface Prisma {
    * Mutations
    */
 
+  createGene: (data: GeneCreateInput) => GenePromise;
+  updateGene: (args: {
+    data: GeneUpdateInput;
+    where: GeneWhereUniqueInput;
+  }) => GenePromise;
+  updateManyGenes: (args: {
+    data: GeneUpdateManyMutationInput;
+    where?: GeneWhereInput;
+  }) => BatchPayloadPromise;
+  upsertGene: (args: {
+    where: GeneWhereUniqueInput;
+    create: GeneCreateInput;
+    update: GeneUpdateInput;
+  }) => GenePromise;
+  deleteGene: (where: GeneWhereUniqueInput) => GenePromise;
+  deleteManyGenes: (where?: GeneWhereInput) => BatchPayloadPromise;
   createSample: (data: SampleCreateInput) => SamplePromise;
   updateSample: (args: {
     data: SampleUpdateInput;
@@ -122,6 +158,9 @@ export interface Prisma {
 }
 
 export interface Subscription {
+  gene: (
+    where?: GeneSubscriptionWhereInput
+  ) => GeneSubscriptionPayloadSubscription;
   sample: (
     where?: SampleSubscriptionWhereInput
   ) => SampleSubscriptionPayloadSubscription;
@@ -137,6 +176,18 @@ export interface ClientConstructor<T> {
 /**
  * Types
  */
+
+export type MutationType = "CREATED" | "UPDATED" | "DELETED";
+
+export type GeneOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "gene_ASC"
+  | "gene_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
 
 export type SampleOrderByInput =
   | "id_ASC"
@@ -162,21 +213,141 @@ export type UserOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
-export type MutationType = "CREATED" | "UPDATED" | "DELETED";
-
-export interface UserCreateInput {
-  name: String;
-}
-
 export type SampleWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
 }>;
+
+export type GeneWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface GeneWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  gene?: String;
+  gene_not?: String;
+  gene_in?: String[] | String;
+  gene_not_in?: String[] | String;
+  gene_lt?: String;
+  gene_lte?: String;
+  gene_gt?: String;
+  gene_gte?: String;
+  gene_contains?: String;
+  gene_not_contains?: String;
+  gene_starts_with?: String;
+  gene_not_starts_with?: String;
+  gene_ends_with?: String;
+  gene_not_ends_with?: String;
+  AND?: GeneWhereInput[] | GeneWhereInput;
+  OR?: GeneWhereInput[] | GeneWhereInput;
+  NOT?: GeneWhereInput[] | GeneWhereInput;
+}
+
+export interface GeneSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: GeneWhereInput;
+  AND?: GeneSubscriptionWhereInput[] | GeneSubscriptionWhereInput;
+  OR?: GeneSubscriptionWhereInput[] | GeneSubscriptionWhereInput;
+  NOT?: GeneSubscriptionWhereInput[] | GeneSubscriptionWhereInput;
+}
+
+export interface SampleCreateInput {
+  sample_tissue: String;
+  z_score: Int;
+  gene: String;
+}
+
+export interface UserUpdateInput {
+  name?: String;
+}
+
+export interface GeneUpdateManyMutationInput {
+  gene?: String;
+}
+
+export interface SampleUpdateManyMutationInput {
+  sample_tissue?: String;
+  z_score?: Int;
+  gene?: String;
+}
+
+export interface GeneUpdateInput {
+  gene?: String;
+}
 
 export interface SampleUpdateInput {
   sample_tissue?: String;
   z_score?: Int;
   gene?: String;
 }
+
+export interface SampleSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: SampleWhereInput;
+  AND?: SampleSubscriptionWhereInput[] | SampleSubscriptionWhereInput;
+  OR?: SampleSubscriptionWhereInput[] | SampleSubscriptionWhereInput;
+  NOT?: SampleSubscriptionWhereInput[] | SampleSubscriptionWhereInput;
+}
+
+export interface UserWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  name?: String;
+  name_not?: String;
+  name_in?: String[] | String;
+  name_not_in?: String[] | String;
+  name_lt?: String;
+  name_lte?: String;
+  name_gt?: String;
+  name_gte?: String;
+  name_contains?: String;
+  name_not_contains?: String;
+  name_starts_with?: String;
+  name_not_starts_with?: String;
+  name_ends_with?: String;
+  name_not_ends_with?: String;
+  AND?: UserWhereInput[] | UserWhereInput;
+  OR?: UserWhereInput[] | UserWhereInput;
+  NOT?: UserWhereInput[] | UserWhereInput;
+}
+
+export interface GeneCreateInput {
+  gene: String;
+}
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
 
 export interface SampleWhereInput {
   id?: ID_Input;
@@ -234,71 +405,6 @@ export interface SampleWhereInput {
   NOT?: SampleWhereInput[] | SampleWhereInput;
 }
 
-export interface SampleSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: SampleWhereInput;
-  AND?: SampleSubscriptionWhereInput[] | SampleSubscriptionWhereInput;
-  OR?: SampleSubscriptionWhereInput[] | SampleSubscriptionWhereInput;
-  NOT?: SampleSubscriptionWhereInput[] | SampleSubscriptionWhereInput;
-}
-
-export interface UserWhereInput {
-  id?: ID_Input;
-  id_not?: ID_Input;
-  id_in?: ID_Input[] | ID_Input;
-  id_not_in?: ID_Input[] | ID_Input;
-  id_lt?: ID_Input;
-  id_lte?: ID_Input;
-  id_gt?: ID_Input;
-  id_gte?: ID_Input;
-  id_contains?: ID_Input;
-  id_not_contains?: ID_Input;
-  id_starts_with?: ID_Input;
-  id_not_starts_with?: ID_Input;
-  id_ends_with?: ID_Input;
-  id_not_ends_with?: ID_Input;
-  name?: String;
-  name_not?: String;
-  name_in?: String[] | String;
-  name_not_in?: String[] | String;
-  name_lt?: String;
-  name_lte?: String;
-  name_gt?: String;
-  name_gte?: String;
-  name_contains?: String;
-  name_not_contains?: String;
-  name_starts_with?: String;
-  name_not_starts_with?: String;
-  name_ends_with?: String;
-  name_not_ends_with?: String;
-  AND?: UserWhereInput[] | UserWhereInput;
-  OR?: UserWhereInput[] | UserWhereInput;
-  NOT?: UserWhereInput[] | UserWhereInput;
-}
-
-export interface SampleCreateInput {
-  sample_tissue: String;
-  z_score: Int;
-  gene: String;
-}
-
-export type UserWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
-
-export interface UserUpdateManyMutationInput {
-  name?: String;
-}
-
-export interface SampleUpdateManyMutationInput {
-  sample_tissue?: String;
-  z_score?: Int;
-  gene?: String;
-}
-
 export interface UserSubscriptionWhereInput {
   mutation_in?: MutationType[] | MutationType;
   updatedFields_contains?: String;
@@ -310,7 +416,11 @@ export interface UserSubscriptionWhereInput {
   NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
 }
 
-export interface UserUpdateInput {
+export interface UserCreateInput {
+  name: String;
+}
+
+export interface UserUpdateManyMutationInput {
   name?: String;
 }
 
@@ -335,88 +445,20 @@ export interface UserEdgeSubscription
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface PageInfo {
-  hasNextPage: Boolean;
-  hasPreviousPage: Boolean;
-  startCursor?: String;
-  endCursor?: String;
+export interface AggregateGene {
+  count: Int;
 }
 
-export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
-  hasNextPage: () => Promise<Boolean>;
-  hasPreviousPage: () => Promise<Boolean>;
-  startCursor: () => Promise<String>;
-  endCursor: () => Promise<String>;
-}
-
-export interface PageInfoSubscription
-  extends Promise<AsyncIterator<PageInfo>>,
+export interface AggregateGenePromise
+  extends Promise<AggregateGene>,
     Fragmentable {
-  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
-  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
-  startCursor: () => Promise<AsyncIterator<String>>;
-  endCursor: () => Promise<AsyncIterator<String>>;
+  count: () => Promise<Int>;
 }
 
-export interface UserPreviousValues {
-  id: ID_Output;
-  name: String;
-}
-
-export interface UserPreviousValuesPromise
-  extends Promise<UserPreviousValues>,
+export interface AggregateGeneSubscription
+  extends Promise<AsyncIterator<AggregateGene>>,
     Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-}
-
-export interface UserPreviousValuesSubscription
-  extends Promise<AsyncIterator<UserPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
-}
-
-export interface SampleConnection {
-  pageInfo: PageInfo;
-  edges: SampleEdge[];
-}
-
-export interface SampleConnectionPromise
-  extends Promise<SampleConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<SampleEdge>>() => T;
-  aggregate: <T = AggregateSamplePromise>() => T;
-}
-
-export interface SampleConnectionSubscription
-  extends Promise<AsyncIterator<SampleConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<SampleEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateSampleSubscription>() => T;
-}
-
-export interface UserConnection {
-  pageInfo: PageInfo;
-  edges: UserEdge[];
-}
-
-export interface UserConnectionPromise
-  extends Promise<UserConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<UserEdge>>() => T;
-  aggregate: <T = AggregateUserPromise>() => T;
-}
-
-export interface UserConnectionSubscription
-  extends Promise<AsyncIterator<UserConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateUserSubscription>() => T;
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface SampleSubscriptionPayload {
@@ -444,60 +486,37 @@ export interface SampleSubscriptionPayloadSubscription
   previousValues: <T = SamplePreviousValuesSubscription>() => T;
 }
 
-export interface SamplePreviousValues {
-  id: ID_Output;
-  sample_tissue: String;
-  z_score: Int;
-  gene: String;
-}
-
-export interface SamplePreviousValuesPromise
-  extends Promise<SamplePreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  sample_tissue: () => Promise<String>;
-  z_score: () => Promise<Int>;
-  gene: () => Promise<String>;
-}
-
-export interface SamplePreviousValuesSubscription
-  extends Promise<AsyncIterator<SamplePreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  sample_tissue: () => Promise<AsyncIterator<String>>;
-  z_score: () => Promise<AsyncIterator<Int>>;
-  gene: () => Promise<AsyncIterator<String>>;
-}
-
-export interface SampleEdge {
-  node: Sample;
+export interface GeneEdge {
+  node: Gene;
   cursor: String;
 }
 
-export interface SampleEdgePromise extends Promise<SampleEdge>, Fragmentable {
-  node: <T = SamplePromise>() => T;
+export interface GeneEdgePromise extends Promise<GeneEdge>, Fragmentable {
+  node: <T = GenePromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface SampleEdgeSubscription
-  extends Promise<AsyncIterator<SampleEdge>>,
+export interface GeneEdgeSubscription
+  extends Promise<AsyncIterator<GeneEdge>>,
     Fragmentable {
-  node: <T = SampleSubscription>() => T;
+  node: <T = GeneSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface User {
+export interface UserPreviousValues {
   id: ID_Output;
   name: String;
 }
 
-export interface UserPromise extends Promise<User>, Fragmentable {
+export interface UserPreviousValuesPromise
+  extends Promise<UserPreviousValues>,
+    Fragmentable {
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
 }
 
-export interface UserSubscription
-  extends Promise<AsyncIterator<User>>,
+export interface UserPreviousValuesSubscription
+  extends Promise<AsyncIterator<UserPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   name: () => Promise<AsyncIterator<String>>;
@@ -519,27 +538,82 @@ export interface AggregateUserSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface Sample {
+export interface User {
   id: ID_Output;
-  sample_tissue: String;
-  z_score: Int;
-  gene: String;
+  name: String;
 }
 
-export interface SamplePromise extends Promise<Sample>, Fragmentable {
+export interface UserPromise extends Promise<User>, Fragmentable {
   id: () => Promise<ID_Output>;
-  sample_tissue: () => Promise<String>;
-  z_score: () => Promise<Int>;
-  gene: () => Promise<String>;
+  name: () => Promise<String>;
 }
 
-export interface SampleSubscription
-  extends Promise<AsyncIterator<Sample>>,
+export interface UserSubscription
+  extends Promise<AsyncIterator<User>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  sample_tissue: () => Promise<AsyncIterator<String>>;
-  z_score: () => Promise<AsyncIterator<Int>>;
-  gene: () => Promise<AsyncIterator<String>>;
+  name: () => Promise<AsyncIterator<String>>;
+}
+
+export interface PageInfo {
+  hasNextPage: Boolean;
+  hasPreviousPage: Boolean;
+  startCursor?: String;
+  endCursor?: String;
+}
+
+export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
+  hasNextPage: () => Promise<Boolean>;
+  hasPreviousPage: () => Promise<Boolean>;
+  startCursor: () => Promise<String>;
+  endCursor: () => Promise<String>;
+}
+
+export interface PageInfoSubscription
+  extends Promise<AsyncIterator<PageInfo>>,
+    Fragmentable {
+  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
+  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
+  startCursor: () => Promise<AsyncIterator<String>>;
+  endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface SampleEdge {
+  node: Sample;
+  cursor: String;
+}
+
+export interface SampleEdgePromise extends Promise<SampleEdge>, Fragmentable {
+  node: <T = SamplePromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface SampleEdgeSubscription
+  extends Promise<AsyncIterator<SampleEdge>>,
+    Fragmentable {
+  node: <T = SampleSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface GeneConnection {
+  pageInfo: PageInfo;
+  edges: GeneEdge[];
+}
+
+export interface GeneConnectionPromise
+  extends Promise<GeneConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<GeneEdge>>() => T;
+  aggregate: <T = AggregateGenePromise>() => T;
+}
+
+export interface GeneConnectionSubscription
+  extends Promise<AsyncIterator<GeneConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<GeneEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateGeneSubscription>() => T;
 }
 
 export interface UserSubscriptionPayload {
@@ -565,6 +639,157 @@ export interface UserSubscriptionPayloadSubscription
   node: <T = UserSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
   previousValues: <T = UserPreviousValuesSubscription>() => T;
+}
+
+export interface Sample {
+  id: ID_Output;
+  sample_tissue: String;
+  z_score: Int;
+  gene: String;
+}
+
+export interface SamplePromise extends Promise<Sample>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  sample_tissue: () => Promise<String>;
+  z_score: () => Promise<Int>;
+  gene: () => Promise<String>;
+}
+
+export interface SampleSubscription
+  extends Promise<AsyncIterator<Sample>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  sample_tissue: () => Promise<AsyncIterator<String>>;
+  z_score: () => Promise<AsyncIterator<Int>>;
+  gene: () => Promise<AsyncIterator<String>>;
+}
+
+export interface SamplePreviousValues {
+  id: ID_Output;
+  sample_tissue: String;
+  z_score: Int;
+  gene: String;
+}
+
+export interface SamplePreviousValuesPromise
+  extends Promise<SamplePreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  sample_tissue: () => Promise<String>;
+  z_score: () => Promise<Int>;
+  gene: () => Promise<String>;
+}
+
+export interface SamplePreviousValuesSubscription
+  extends Promise<AsyncIterator<SamplePreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  sample_tissue: () => Promise<AsyncIterator<String>>;
+  z_score: () => Promise<AsyncIterator<Int>>;
+  gene: () => Promise<AsyncIterator<String>>;
+}
+
+export interface GenePreviousValues {
+  id: ID_Output;
+  gene: String;
+}
+
+export interface GenePreviousValuesPromise
+  extends Promise<GenePreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  gene: () => Promise<String>;
+}
+
+export interface GenePreviousValuesSubscription
+  extends Promise<AsyncIterator<GenePreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  gene: () => Promise<AsyncIterator<String>>;
+}
+
+export interface GeneSubscriptionPayload {
+  mutation: MutationType;
+  node: Gene;
+  updatedFields: String[];
+  previousValues: GenePreviousValues;
+}
+
+export interface GeneSubscriptionPayloadPromise
+  extends Promise<GeneSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = GenePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = GenePreviousValuesPromise>() => T;
+}
+
+export interface GeneSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<GeneSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = GeneSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = GenePreviousValuesSubscription>() => T;
+}
+
+export interface Gene {
+  id: ID_Output;
+  gene: String;
+}
+
+export interface GenePromise extends Promise<Gene>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  gene: () => Promise<String>;
+}
+
+export interface GeneSubscription
+  extends Promise<AsyncIterator<Gene>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  gene: () => Promise<AsyncIterator<String>>;
+}
+
+export interface UserConnection {
+  pageInfo: PageInfo;
+  edges: UserEdge[];
+}
+
+export interface UserConnectionPromise
+  extends Promise<UserConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserEdge>>() => T;
+  aggregate: <T = AggregateUserPromise>() => T;
+}
+
+export interface UserConnectionSubscription
+  extends Promise<AsyncIterator<UserConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserSubscription>() => T;
+}
+
+export interface SampleConnection {
+  pageInfo: PageInfo;
+  edges: SampleEdge[];
+}
+
+export interface SampleConnectionPromise
+  extends Promise<SampleConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<SampleEdge>>() => T;
+  aggregate: <T = AggregateSamplePromise>() => T;
+}
+
+export interface SampleConnectionSubscription
+  extends Promise<AsyncIterator<SampleConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<SampleEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateSampleSubscription>() => T;
 }
 
 export interface BatchPayload {
@@ -600,9 +825,9 @@ export interface AggregateSampleSubscription
 }
 
 /*
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
+The `Boolean` scalar type represents `true` or `false`.
 */
-export type Int = number;
+export type Boolean = boolean;
 
 /*
 The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
@@ -613,9 +838,9 @@ export type ID_Output = string;
 export type Long = string;
 
 /*
-The `Boolean` scalar type represents `true` or `false`.
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
 */
-export type Boolean = boolean;
+export type Int = number;
 
 /*
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
@@ -627,6 +852,10 @@ export type String = string;
  */
 
 export const models: Model[] = [
+  {
+    name: "Gene",
+    embedded: false
+  },
   {
     name: "Sample",
     embedded: false

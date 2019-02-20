@@ -1,10 +1,21 @@
 type Query {
-  samples: [Sample]!
+    samples: [Sample]!
+    genes: [Gene]!
+    heatmap(genes: [String]!, height: Int!, width: Int!, sample_tissues: [Float]!): [HeatmapPoint]!
 }
 
 type Sample {
-  id: ID!
-  sample_tissue: String!
-  z_score: Int!
-  gene: String!
+    id: ID!
+    sample_tissue: String!
+    z_score: Int!
+    gene: String!
+}
+
+type Gene {
+    id: ID!
+    gene: String!
+}
+
+type HeatmapPoint{
+    coord: [Float]!
 }

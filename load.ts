@@ -40,6 +40,7 @@ const genes = [
 	'VAPB',
 	'VCP',
 ];
+
 const sample_tissues = [
 	'Cerebellum',
 	'Cortex Frontal',
@@ -48,7 +49,17 @@ const sample_tissues = [
 	'Motor Cortex Lateral',
 	'Spinal Cord',
 ];
+
 const thresholds = [50, 160, 250, 30, 120, 50];
+
+async function loadGenes() {
+	genes.forEach(async gene => {
+		const newGene = await prisma.createGene({
+			gene
+		});
+		console.log(`inserted ${newGene.id} from ${newGene.gene}`)
+	})
+}
 
 async function loadRandomSamples() {
 	const samples = [];
@@ -73,8 +84,9 @@ async function loadRandomSamples() {
 	}
 }
 
-loadRandomSamples().catch(e => console.error(e))
+// loadRandomSamples().catch(e => console.error(e))
 
+loadGenes().catch(e => console.error(e));
 
 // Utils
 function getRandomInt(max) {

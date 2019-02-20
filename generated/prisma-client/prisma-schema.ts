@@ -1,4 +1,8 @@
-export const typeDefs = /* GraphQL */ `type AggregateSample {
+export const typeDefs = /* GraphQL */ `type AggregateGene {
+  count: Int!
+}
+
+type AggregateSample {
   count: Int!
 }
 
@@ -10,9 +14,115 @@ type BatchPayload {
   count: Long!
 }
 
+type Gene {
+  id: ID!
+  gene: String!
+}
+
+type GeneConnection {
+  pageInfo: PageInfo!
+  edges: [GeneEdge]!
+  aggregate: AggregateGene!
+}
+
+input GeneCreateInput {
+  gene: String!
+}
+
+type GeneEdge {
+  node: Gene!
+  cursor: String!
+}
+
+enum GeneOrderByInput {
+  id_ASC
+  id_DESC
+  gene_ASC
+  gene_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type GenePreviousValues {
+  id: ID!
+  gene: String!
+}
+
+type GeneSubscriptionPayload {
+  mutation: MutationType!
+  node: Gene
+  updatedFields: [String!]
+  previousValues: GenePreviousValues
+}
+
+input GeneSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: GeneWhereInput
+  AND: [GeneSubscriptionWhereInput!]
+  OR: [GeneSubscriptionWhereInput!]
+  NOT: [GeneSubscriptionWhereInput!]
+}
+
+input GeneUpdateInput {
+  gene: String
+}
+
+input GeneUpdateManyMutationInput {
+  gene: String
+}
+
+input GeneWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  gene: String
+  gene_not: String
+  gene_in: [String!]
+  gene_not_in: [String!]
+  gene_lt: String
+  gene_lte: String
+  gene_gt: String
+  gene_gte: String
+  gene_contains: String
+  gene_not_contains: String
+  gene_starts_with: String
+  gene_not_starts_with: String
+  gene_ends_with: String
+  gene_not_ends_with: String
+  AND: [GeneWhereInput!]
+  OR: [GeneWhereInput!]
+  NOT: [GeneWhereInput!]
+}
+
+input GeneWhereUniqueInput {
+  id: ID
+}
+
 scalar Long
 
 type Mutation {
+  createGene(data: GeneCreateInput!): Gene!
+  updateGene(data: GeneUpdateInput!, where: GeneWhereUniqueInput!): Gene
+  updateManyGenes(data: GeneUpdateManyMutationInput!, where: GeneWhereInput): BatchPayload!
+  upsertGene(where: GeneWhereUniqueInput!, create: GeneCreateInput!, update: GeneUpdateInput!): Gene!
+  deleteGene(where: GeneWhereUniqueInput!): Gene
+  deleteManyGenes(where: GeneWhereInput): BatchPayload!
   createSample(data: SampleCreateInput!): Sample!
   updateSample(data: SampleUpdateInput!, where: SampleWhereUniqueInput!): Sample
   updateManySamples(data: SampleUpdateManyMutationInput!, where: SampleWhereInput): BatchPayload!
@@ -45,6 +155,9 @@ type PageInfo {
 }
 
 type Query {
+  gene(where: GeneWhereUniqueInput!): Gene
+  genes(where: GeneWhereInput, orderBy: GeneOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Gene]!
+  genesConnection(where: GeneWhereInput, orderBy: GeneOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GeneConnection!
   sample(where: SampleWhereUniqueInput!): Sample
   samples(where: SampleWhereInput, orderBy: SampleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Sample]!
   samplesConnection(where: SampleWhereInput, orderBy: SampleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SampleConnection!
@@ -191,6 +304,7 @@ input SampleWhereUniqueInput {
 }
 
 type Subscription {
+  gene(where: GeneSubscriptionWhereInput): GeneSubscriptionPayload
   sample(where: SampleSubscriptionWhereInput): SampleSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }

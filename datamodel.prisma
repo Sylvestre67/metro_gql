@@ -9,3 +9,8 @@ type Sample {
   z_score: Int!
   gene: String!
 }
+
+type Gene {
+  id: ID! @id
+  gene: String!
+}

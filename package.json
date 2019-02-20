@@ -5,6 +5,7 @@
   "author": "Sylvestre Gug <sylvestre.gug@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "d3": "^5.9.1",
     "graphql-yoga": "^1.17.4",
     "prisma-client-lib": "^1.26.6"
   },
