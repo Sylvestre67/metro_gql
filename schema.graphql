@@ -1,7 +1,10 @@
 type Query {
     samples: [Sample]!
-    genes: [Gene]!
-    heatmap(genes: [String]!, height: Int!, width: Int!, sample_tissues: [Float]!): [HeatmapPoint]!
+    genes(genes: [String]): [Gene]!
+    heatmap(selected_genes: [String],
+        selected_tissues: [Float],
+        height: Int!,
+        width: Int!): Heatmap!
 }
 
 type Sample {
@@ -16,6 +19,21 @@ type Gene {
     gene: String!
 }
 
-type HeatmapPoint{
-    coord: [Float]!
+type Tissue{
+    tissue: String!
+    sample_count: Int!
+}
+
+type Point{
+    x: Float!
+    y: Float!
+    z: Float!
+    w: Float!
+    h: Float!
+}
+
+type Heatmap{
+    genes: [String]!
+    tissues: [Tissue]!
+    points: [Point]!
 }

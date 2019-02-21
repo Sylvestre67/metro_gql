@@ -8,63 +8,98 @@ const resolvers = {
             return context.prisma.samples()
         },
         genes(parent, args, context) {
+
             return context.prisma.genes(
-                {orderBy: 'gene_ASC'}
+                {
+                    orderBy: 'gene_ASC',
+
+                }
             );
         },
-        async heatmap(parent, {sample_tissues, genes, height, width}, context) {
-            console.log(sample_tissues);
+        async heatmap(parent, {selected_tissues, selected_genes, height, width}, context) {
+
+            if (!selected_genes) {
+                // get list of selected_genes
+                selected_genes = await context.prisma.genes({orderBy: 'gene_ASC'});
+                selected_genes = selected_genes.map(g => g.gene);
+            }
 
             // get list of samples
-            const samples = await context.prisma.samples({where: {gene_in: genes}});
+            const samples = await context.prisma.samples({where: {gene_in: selected_genes}});
+
+
+            if (!selected_tissues) {
+                // setup the default scale of x-axis (tissues)
+                selected_tissues = [0, samples.length / selected_genes.length]
+            }
+
+            console.log('selected_genes', selected_genes);
             console.log('samples selected', samples.length);
+            console.log('tissues', selected_tissues);
 
             // redefine scales
-            const z = d3
+            const z_scale = d3
                 .scaleLinear()
                 .domain([-3, 3])
                 .range([0, 1]);
 
-            const y = d3
+            const y_scale = d3
                 .scaleBand()
-                .domain(genes)
+                .domain(selected_genes)
                 .range([0, height]);
 
-            const x = d3
+            const x_scale = d3
                 .scaleLinear()
-                .domain(sample_tissues)
+                .domain(selected_tissues)
                 .range([0, width]);
 
             // Build the list of heatmap points
-            let check = '';
+            let tissues = {};
+            let gene_check = '';
+            let tissue_check = '';
             let idx = 1;
-            const [min, max] = sample_tissues;
+            const [min, max] = selected_tissues;
 
-            const data = samples.reduce((acc, s) => {
-                if (check !== s.gene) {
-                    check = s.gene;
+            const points = samples.reduce((acc, s) => {
+                // Track gene change
+                if (gene_check !== s.gene) {
+                    gene_check = s.gene;
                     idx = 1;
                 } else {
                     idx += 1;
                 }
 
+                // Build tissues dict
+                if (tissues[s.sample_tissue]) {
+                    tissues[s.sample_tissue] += 1
+                } else {
+                    tissues[s.sample_tissue] = 1
+                }
+
                 // Negative are out of range, no need to send them back to the UI.
                 if (idx >= min && idx <= max) {
-                    const x1 = x(idx);
-                    const y1 = y(s.gene);
-                    const value = z(s.z_score);
-                    const width = x(min + 1);
-                    const height = y.bandwidth();
+                    const x = x_scale(idx);
+                    const y = y_scale(s.gene);
+                    const z = z_scale(s.z_score);
+                    const w = x_scale(min + 1);
+                    const h = y_scale.bandwidth();
 
-                    acc.push({coord: [x1, y1, value, width, height]});
+                    acc.push({x, y, z, w, h});
                 }
 
                 return acc
             }, []);
 
-            console.log(data.length);
 
-            return data
+            // Reformat tissues to an array of Tissue object.
+            tissues = Object.keys(tissues).map(t => {
+                return {
+                    tissue: t,
+                    sample_count: tissues[t]
+                }
+            });
+
+            return {points, genes: selected_genes, tissues}
         }
     }
 };
