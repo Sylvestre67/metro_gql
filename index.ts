@@ -1,5 +1,5 @@
-import {prisma} from './generated/prisma-client'
-import {GraphQLServer} from 'graphql-yoga'
+import {prisma} from './generated/prisma-client';
+import {GraphQLServer} from 'graphql-yoga';
 import * as d3 from 'd3';
 
 const resolvers = {
@@ -56,7 +56,7 @@ const resolvers = {
             // Build the list of heatmap points
             let tissues = {};
             let gene_check = '';
-            let tissue_check = '';
+            let gene_switched = false;
             let idx = 1;
             const [min, max] = selected_tissues;
 
@@ -69,11 +69,16 @@ const resolvers = {
                     idx += 1;
                 }
 
-                // Build tissues dict
-                if (tissues[s.sample_tissue]) {
-                    tissues[s.sample_tissue] += 1
+                if (!tissues[gene_check]) {
+                    tissues[gene_check] = {
+                        [s.sample_tissue]: 1
+                    }
                 } else {
-                    tissues[s.sample_tissue] = 1
+                    if (!tissues[gene_check][s.sample_tissue]) {
+                        tissues[gene_check][s.sample_tissue] = 1
+                    } else {
+                        tissues[gene_check][s.sample_tissue] += 1
+                    }
                 }
 
                 // Negative are out of range, no need to send them back to the UI.
@@ -90,12 +95,12 @@ const resolvers = {
                 return acc
             }, []);
 
-
             // Reformat tissues to an array of Tissue object.
-            tissues = Object.keys(tissues).map(t => {
+            const ref = Object.values(tissues)[0];
+            tissues = Object.keys(ref).map(t => {
                 return {
                     tissue: t,
-                    sample_count: tissues[t]
+                    sample_count: ref[t]
                 }
             });
 
