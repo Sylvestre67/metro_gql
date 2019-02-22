@@ -1,8 +1,10 @@
 type Query {
     samples: [Sample]!
+    sample_tissues(tissues: [String]): [SampleTissue]!
     genes(genes: [String]): [Gene]!
     heatmap(selected_genes: [String],
         selected_tissues: [Float],
+        xDomain: [Float],
         height: Int!,
         width: Int!): Heatmap!
 }
@@ -17,6 +19,11 @@ type Sample {
 type Gene {
     id: ID!
     gene: String!
+}
+
+type SampleTissue{
+    id: ID!
+    tissue: String!
 }
 
 type Tissue{

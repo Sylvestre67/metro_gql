@@ -14,3 +14,8 @@ type Gene {
   id: ID! @id
   gene: String!
 }
+
+type SampleTissue{
+  id: ID! @id
+  tissue: String!
+}

@@ -6,6 +6,10 @@ type AggregateSample {
   count: Int!
 }
 
+type AggregateSampleTissue {
+  count: Int!
+}
+
 type AggregateUser {
   count: Int!
 }
@@ -129,6 +133,12 @@ type Mutation {
   upsertSample(where: SampleWhereUniqueInput!, create: SampleCreateInput!, update: SampleUpdateInput!): Sample!
   deleteSample(where: SampleWhereUniqueInput!): Sample
   deleteManySamples(where: SampleWhereInput): BatchPayload!
+  createSampleTissue(data: SampleTissueCreateInput!): SampleTissue!
+  updateSampleTissue(data: SampleTissueUpdateInput!, where: SampleTissueWhereUniqueInput!): SampleTissue
+  updateManySampleTissues(data: SampleTissueUpdateManyMutationInput!, where: SampleTissueWhereInput): BatchPayload!
+  upsertSampleTissue(where: SampleTissueWhereUniqueInput!, create: SampleTissueCreateInput!, update: SampleTissueUpdateInput!): SampleTissue!
+  deleteSampleTissue(where: SampleTissueWhereUniqueInput!): SampleTissue
+  deleteManySampleTissues(where: SampleTissueWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -161,6 +171,9 @@ type Query {
   sample(where: SampleWhereUniqueInput!): Sample
   samples(where: SampleWhereInput, orderBy: SampleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Sample]!
   samplesConnection(where: SampleWhereInput, orderBy: SampleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SampleConnection!
+  sampleTissue(where: SampleTissueWhereUniqueInput!): SampleTissue
+  sampleTissues(where: SampleTissueWhereInput, orderBy: SampleTissueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SampleTissue]!
+  sampleTissuesConnection(where: SampleTissueWhereInput, orderBy: SampleTissueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SampleTissueConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
@@ -229,6 +242,106 @@ input SampleSubscriptionWhereInput {
   AND: [SampleSubscriptionWhereInput!]
   OR: [SampleSubscriptionWhereInput!]
   NOT: [SampleSubscriptionWhereInput!]
+}
+
+type SampleTissue {
+  id: ID!
+  tissue: String!
+}
+
+type SampleTissueConnection {
+  pageInfo: PageInfo!
+  edges: [SampleTissueEdge]!
+  aggregate: AggregateSampleTissue!
+}
+
+input SampleTissueCreateInput {
+  tissue: String!
+}
+
+type SampleTissueEdge {
+  node: SampleTissue!
+  cursor: String!
+}
+
+enum SampleTissueOrderByInput {
+  id_ASC
+  id_DESC
+  tissue_ASC
+  tissue_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type SampleTissuePreviousValues {
+  id: ID!
+  tissue: String!
+}
+
+type SampleTissueSubscriptionPayload {
+  mutation: MutationType!
+  node: SampleTissue
+  updatedFields: [String!]
+  previousValues: SampleTissuePreviousValues
+}
+
+input SampleTissueSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: SampleTissueWhereInput
+  AND: [SampleTissueSubscriptionWhereInput!]
+  OR: [SampleTissueSubscriptionWhereInput!]
+  NOT: [SampleTissueSubscriptionWhereInput!]
+}
+
+input SampleTissueUpdateInput {
+  tissue: String
+}
+
+input SampleTissueUpdateManyMutationInput {
+  tissue: String
+}
+
+input SampleTissueWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  tissue: String
+  tissue_not: String
+  tissue_in: [String!]
+  tissue_not_in: [String!]
+  tissue_lt: String
+  tissue_lte: String
+  tissue_gt: String
+  tissue_gte: String
+  tissue_contains: String
+  tissue_not_contains: String
+  tissue_starts_with: String
+  tissue_not_starts_with: String
+  tissue_ends_with: String
+  tissue_not_ends_with: String
+  AND: [SampleTissueWhereInput!]
+  OR: [SampleTissueWhereInput!]
+  NOT: [SampleTissueWhereInput!]
+}
+
+input SampleTissueWhereUniqueInput {
+  id: ID
 }
 
 input SampleUpdateInput {
@@ -306,6 +419,7 @@ input SampleWhereUniqueInput {
 type Subscription {
   gene(where: GeneSubscriptionWhereInput): GeneSubscriptionPayload
   sample(where: SampleSubscriptionWhereInput): SampleSubscriptionPayload
+  sampleTissue(where: SampleTissueSubscriptionWhereInput): SampleTissueSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 

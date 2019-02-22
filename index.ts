@@ -7,8 +7,10 @@ const resolvers = {
         samples(parent, args, context) {
             return context.prisma.samples()
         },
+        sample_tissues(parent, args, context) {
+            return context.prisma.sampleTissues({orderBy: 'tissue_ASC'});
+        },
         genes(parent, args, context) {
-
             return context.prisma.genes(
                 {
                     orderBy: 'gene_ASC',
@@ -16,7 +18,7 @@ const resolvers = {
                 }
             );
         },
-        async heatmap(parent, {selected_tissues, selected_genes, height, width}, context) {
+        async heatmap(parent, {xDomain, selected_tissues, selected_genes, height, width}, context) {
 
             if (!selected_genes) {
                 // get list of selected_genes
@@ -24,8 +26,21 @@ const resolvers = {
                 selected_genes = selected_genes.map(g => g.gene);
             }
 
+            if (!selected_tissues) {
+                // get list of selected_tissues
+                selected_tissues = await context.prisma.sampleTissues({orderBy: 'tissue_ASC'});
+                selected_tissues = selected_tissues.map(g => g.tissue);
+            }
+
             // get list of samples
-            const samples = await context.prisma.samples({where: {gene_in: selected_genes}});
+            const samples = await context.prisma.samples({
+                where: {
+                    gene_in: selected_genes,
+                    AND: {
+                        sample_tissue_in: selected_tissues
+                    }
+                }
+            });
 
 
             if (!selected_tissues) {
@@ -34,8 +49,8 @@ const resolvers = {
             }
 
             console.log('selected_genes', selected_genes);
-            console.log('samples selected', samples.length);
-            console.log('tissues', selected_tissues);
+            console.log('selected_samples', samples.length);
+            console.log('selected_tissues', selected_tissues);
 
             // redefine scales
             const z_scale = d3
@@ -50,15 +65,19 @@ const resolvers = {
 
             const x_scale = d3
                 .scaleLinear()
-                .domain(selected_tissues)
+                .domain([0, samples.length / selected_genes.length])
                 .range([0, width]);
+
+            if (xDomain) {
+                x_scale.domain(xDomain)
+            }
 
             // Build the list of heatmap points
             let tissues = {};
             let gene_check = '';
-            let gene_switched = false;
+
             let idx = 1;
-            const [min, max] = selected_tissues;
+            const [min, max] = x_scale.domain();
 
             const points = samples.reduce((acc, s) => {
                 // Track gene change
