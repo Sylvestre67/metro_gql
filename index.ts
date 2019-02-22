@@ -48,10 +48,6 @@ const resolvers = {
                 selected_tissues = [0, samples.length / selected_genes.length]
             }
 
-            console.log('selected_genes', selected_genes);
-            console.log('selected_samples', samples.length);
-            console.log('selected_tissues', selected_tissues);
-
             // redefine scales
             const z_scale = d3
                 .scaleLinear()
@@ -76,32 +72,33 @@ const resolvers = {
             let tissues = {};
             let gene_check = '';
 
-            let idx = 1;
+            let idx = 0;
             const [min, max] = x_scale.domain();
 
             const points = samples.reduce((acc, s) => {
                 // Track gene change
                 if (gene_check !== s.gene) {
                     gene_check = s.gene;
-                    idx = 1;
+                    idx = 0;
                 } else {
                     idx += 1;
                 }
 
-                if (!tissues[gene_check]) {
-                    tissues[gene_check] = {
-                        [s.sample_tissue]: 1
-                    }
-                } else {
-                    if (!tissues[gene_check][s.sample_tissue]) {
-                        tissues[gene_check][s.sample_tissue] = 1
-                    } else {
-                        tissues[gene_check][s.sample_tissue] += 1
-                    }
-                }
-
                 // Negative are out of range, no need to send them back to the UI.
                 if (idx >= min && idx <= max) {
+
+                    if (!tissues[gene_check]) {
+                        tissues[gene_check] = {
+                            [s.sample_tissue]: 1
+                        }
+                    } else {
+                        if (!tissues[gene_check][s.sample_tissue]) {
+                            tissues[gene_check][s.sample_tissue] = 1
+                        } else {
+                            tissues[gene_check][s.sample_tissue] += 1
+                        }
+                    }
+
                     const x = x_scale(idx);
                     const y = y_scale(s.gene);
                     const z = z_scale(s.z_score);
@@ -123,7 +120,7 @@ const resolvers = {
                 }
             });
 
-            return {points, genes: selected_genes, tissues}
+            return {points, genes: y_scale.domain(), tissues}
         }
     }
 };
