@@ -44,14 +44,17 @@ const genes = [
 const sample_tissues = [
     'Cerebellum',
     'Cortex Frontal',
+    'Cortex Occipital',
     'Liver',
     'Motor Cortex',
     'Motor Cortex Lateral',
+    'Motor Cortex Medial',
     'Spinal Cord',
-
+    'Spinal Cord Thoracic',
+    'Spinal Cord Lumbar'
 ];
 
-const thresholds = [50, 160, 250, 30, 120, 50];
+const thresholds = [5, 16, 25, 30, 12, 50, 80, 90, 10, 65];
 
 async function loadGenes() {
     genes.forEach(async gene => {
@@ -60,6 +63,18 @@ async function loadGenes() {
         });
         console.log(`inserted ${newGene.id} from ${newGene.gene}`)
     })
+}
+
+async function unLoadGenes() {
+    await prisma.deleteManyGenes({gene_in: genes})
+}
+
+async function unLoadSampleTissues() {
+    await prisma.deleteManySampleTissues({tissue_in: sample_tissues})
+}
+
+async function unLoadSamples() {
+    await prisma.deleteManySamples({sample_tissue_in: sample_tissues})
 }
 
 async function loadSampleTissues() {
@@ -93,10 +108,16 @@ async function loadRandomSamples() {
     }
 }
 
+// unLoad data
+// unLoadSamples().catch(e => console.error(e));
+unLoadGenes().catch(e => console.error(e));
+// unLoadSampleTissues().catch((e => console.error(e)));
+
 // Load data
-// loadRandomSamples().catch(e => console.error(e))
-// loadGenes().catch(e => console.error(e));
-loadSampleTissues().catch((e => console.error(e)));
+// loadRandomSamples().catch(e => console.error(e));
+loadGenes().catch(e => console.error(e));
+// loadSampleTissues().catch((e => console.error(e)));
+
 
 // Utils
 function getRandomInt(max) {
