@@ -14,12 +14,22 @@ const resolvers = {
             return context.prisma.genes(
                 {
                     orderBy: 'gene_ASC',
-
                 }
             );
         },
-        variants(parent, args, context) {
-            return context.prisma.variants();
+        variants(parent, {positions}, context) {
+
+          if( positions ){
+            const [min,max] = positions.sort();
+            return context.prisma.variants({
+              where:{
+                  position_gte: Math.round(Math.floor(min)),
+                  position_lte: Math.round(Math.ceil(max)),
+              }
+            });
+          }
+
+          return context.prisma.variants();
         },
         async heatmap(parent, {xDomain, selected_tissues, selected_genes, height, width}, context) {
 

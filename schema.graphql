@@ -7,7 +7,7 @@ type Query {
         xDomain: [Float],
         height: Int!,
         width: Int!): Heatmap!
-    variants: [Variant]!
+    variants(positions: [Float]): [Variant]!
 }
 
 type Variant{
