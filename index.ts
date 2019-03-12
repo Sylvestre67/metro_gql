@@ -18,6 +18,9 @@ const resolvers = {
                 }
             );
         },
+        variants(parent, args, context) {
+            return context.prisma.variants();
+        },
         async heatmap(parent, {xDomain, selected_tissues, selected_genes, height, width}, context) {
 
             if (!selected_genes) {

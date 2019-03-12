@@ -19,3 +19,22 @@ type SampleTissue{
   id: ID! @id
   tissue: String!
 }
+
+type Variant{
+  id: ID! @id
+  rsid: String
+  type: String
+  samples: Int
+  chromosome: Int
+  position: Int
+  reference: String
+  alternative: String
+  effect: String
+  impact: String
+  feature_type: String
+  feature_id: String
+  hgvs_codon_change: String
+  hgvs_protein_change: String
+  clinvar_significance: String
+  clinvar_disease: String
+}

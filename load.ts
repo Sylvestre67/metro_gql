@@ -1,5 +1,7 @@
 import {prisma} from './generated/prisma-client'
 
+import * as variants from './rest/variants.json';
+
 const genes = [
     'ALS2',
     'ANG',
@@ -108,16 +110,35 @@ async function loadRandomSamples() {
     }
 }
 
+async function loadVariants() {
+    const samples = [];
+    let count = 0;
+    const {list} = variants;
+
+    for(let i = 0; i < list.length; i ++){
+      const variant = list[i];
+      const newVariant = await prisma.createVariant(variant);
+      console.log(`inserted variant ${newVariant.rsid}`);
+    }
+}
+
+async function unloadVariants() {
+  const {list} = variants;
+  const rsids = list.map(v => v.rsid);
+  await prisma.deleteManyVariants({rsid_in: rsids})
+}
+
 // unLoad data
-// unLoadSamples().catch(e => console.error(e));
-unLoadGenes().catch(e => console.error(e));
-// unLoadSampleTissues().catch((e => console.error(e)));
+// unLoadSamples()
+// unLoadGenes()
+// unLoadSampleTissues()
+// unloadVariants()
 
 // Load data
-// loadRandomSamples().catch(e => console.error(e));
-loadGenes().catch(e => console.error(e));
-// loadSampleTissues().catch((e => console.error(e)));
-
+// loadRandomSamples()
+// loadGenes()
+// loadSampleTissues()
+loadVariants()
 
 // Utils
 function getRandomInt(max) {

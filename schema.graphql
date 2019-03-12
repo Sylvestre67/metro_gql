@@ -7,6 +7,25 @@ type Query {
         xDomain: [Float],
         height: Int!,
         width: Int!): Heatmap!
+    variants: [Variant]!
+}
+
+type Variant{
+  type: String,
+  samples: Int,
+  chromosome: Int,
+  position: Int,
+  reference: String,
+  alternative: String,
+  effect: String,
+  impact: String,
+  feature_type: String,
+  feature_id: String,
+  hgvs_codon_change: String,
+  hgvs_protein_change: String,
+  clinvar_significance: String,
+  clinvar_disease: String,
+  rsid: String
 }
 
 type Sample {
