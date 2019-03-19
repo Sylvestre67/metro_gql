@@ -1,26 +1,42 @@
 version: '3'
 services:
-  prisma:
-    image: prismagraphql/prisma:1.26
-    restart: always
-    ports:
-    - "4466:4466"
-    environment:
-      PRISMA_CONFIG: |
-        port: 4466
-        databases:
-          default:
-            connector: mongo
-            uri: mongodb://prisma:prisma@mongo
-  mongo:
-    image: mongo:3.6
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: prisma
-      MONGO_INITDB_ROOT_PASSWORD: prisma
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo:/var/lib/mongo
+    prisma:
+        image: prismagraphql/prisma:1.26
+        restart: always
+        ports:
+            - '4466:4466'
+        environment:
+            PRISMA_CONFIG: |
+                port: 4466
+                managementApiSecret: my-server-secret-42
+                databases:
+                  default:
+                    connector: mongo
+                    uri: mongodb://prisma:prisma@mongo
+        depends_on:
+            - mongo
+    mongo:
+        image: mongo:3.6
+        restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: prisma
+            MONGO_INITDB_ROOT_PASSWORD: prisma
+        ports:
+            - '27017:27017'
+        volumes:
+            - mongo:/var/lib/mongo
+    server:
+        ports:
+            - '4000:4000'
+        build:
+            context: .
+            dockerfile: Dockerfile
+        depends_on:
+            - prisma
+        environment:
+            PRISMA_MANAGEMENT_API_SECRET: my-server-secret-42
+            PRISMA_ENDPOINT: http://prisma:4466/
+            PRISMA_SECRET: mysecret123
+            APP_SECRET: jwtsecret123
 volumes:
-  mongo:
+    mongo:
