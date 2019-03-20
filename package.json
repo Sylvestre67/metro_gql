@@ -1,21 +1,22 @@
 {
-  "name": "metronome-api",
-  "version": "1.0.0",
-  "main": "index.js",
-  "author": "Sylvestre Gug <sylvestre.gug@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "d3": "^5.9.1",
-    "graphql-yoga": "^1.17.4",
-    "prisma-client-lib": "^1.26.6"
-  },
-  "scripts": {
-    "test": "echo 'Error: no test specified' && exit 1",
-    "load": "ts-node load.ts",
-    "start": "ts-node index.ts"
-  },
-  "devDependencies": {
-    "ts-node": "^8.0.2",
-    "typescript": "^3.3.3"
-  }
+	"name": "metronome-api",
+	"version": "1.0.0",
+	"main": "index.js",
+	"author": "Sylvestre Gug <sylvestre.gug@gmail.com>",
+	"license": "MIT",
+	"dependencies": {
+		"d3": "^5.9.1",
+		"graphql-yoga": "^1.17.4",
+		"prisma-client-lib": "^1.26.6"
+	},
+	"scripts": {
+		"test": "echo 'Error: no test specified' && exit 1",
+		"load": "ts-node ./data/seed.ts",
+		"unload": "ts-node ./data/unSeed.ts",
+		"start": "ts-node index.ts"
+	},
+	"devDependencies": {
+		"ts-node": "^8.0.2",
+		"typescript": "^3.3.3"
+	}
 }
