@@ -1,8 +1,8 @@
-import { prisma } from './generated/prisma-client';
+import { prisma } from '../generated/prisma-client';
 
-import * as variants from './rest/variants.json';
+import * as variants from './variants.json';
 
-const genes = [
+export const genes = [
 	'ALS2',
 	'ANG',
 	'ANXA11',
@@ -43,7 +43,7 @@ const genes = [
 	'VCP',
 ];
 
-const sample_tissues = [
+export const sample_tissues = [
 	'Cerebellum',
 	'Cortex Frontal',
 	'Cortex Occipital',
@@ -65,18 +65,6 @@ async function loadGenes() {
 		});
 		console.log(`inserted ${newGene.id} from ${newGene.gene}`);
 	});
-}
-
-async function unLoadGenes() {
-	await prisma.deleteManyGenes({ gene_in: genes });
-}
-
-async function unLoadSampleTissues() {
-	await prisma.deleteManySampleTissues({ tissue_in: sample_tissues });
-}
-
-async function unLoadSamples() {
-	await prisma.deleteManySamples({ sample_tissue_in: sample_tissues });
 }
 
 async function loadSampleTissues() {
@@ -122,24 +110,16 @@ async function loadVariants() {
 	}
 }
 
-function unloadVariants() {
-	const { list } = variants;
-	const rsids = list.map(v => v.rsid);
-	return prisma.deleteManyVariants({ rsid_in: rsids });
-}
-
-// unLoad data
-// unLoadSamples()
-// unLoadGenes()
-// unLoadSampleTissues()
-// unloadVariants()
-
 // Load data
 const loadData = async () => {
-	await loadRandomSamples();
+	console.log('loading genes');
 	await loadGenes();
+	console.log('loading tissues');
 	await loadSampleTissues();
+	console.log('loading variants');
 	await loadVariants();
+	console.log('loading samples');
+	await loadRandomSamples();
 };
 
 loadData();
