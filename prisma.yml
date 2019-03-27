@@ -10,4 +10,4 @@ hooks:
         - prisma generate
 
 seed:
-    run: ts-node data/seed.js
+    run: ts-node ./data/seed.js
